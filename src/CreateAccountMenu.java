@@ -1,10 +1,23 @@
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class CreateAccountMenu extends javax.swing.JDialog {
 
     public CreateAccountMenu(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        mysqlsource = new MySQLSource();
         setLocationRelativeTo(parent);
     }
+    
+    public String username;
+    public String password;
+    public int socialNumber;
+    public double deposit;
+    public String accountType;
+    
+    private final MySQLSource mysqlsource;
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -79,13 +92,28 @@ public class CreateAccountMenu extends javax.swing.JDialog {
 
         buttonGroup1.add(jRadioButton2);
         jRadioButton2.setText("Checkings");
+        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton2ActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(jRadioButton3);
         jRadioButton3.setText("Savings");
 
         jButton1.setText("Clear");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Save");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -181,15 +209,67 @@ public class CreateAccountMenu extends javax.swing.JDialog {
     }//GEN-LAST:event_jRadioButtonSavingsActionPerformed
 
     private void jButtonCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateActionPerformed
-        String username = jTextFieldUsername.getText();
-        String password = jTextFieldPassword.getText();
+        username = jTextFieldUsername.getText();
+        password = jTextFieldPassword.getText();
         String tempSocial = jTextFieldSS.getText();
-        int socialNumber = Integer.parseInt(tempSocial);
+        socialNumber = Integer.parseInt(tempSocial);
         String tempDeposit = jTextFieldInitialDeposit.getText();
-        double deposit = Integer.parseInt(tempDeposit);
+        deposit = Integer.parseInt(tempDeposit);
         
-//        Sting accountType = 
+        accountType = "";
     }//GEN-LAST:event_jButtonCreateActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        jTextFieldUsername.setText("");
+        jTextFieldPassword.setText("");
+        jTextFieldSS.setText("");
+        jTextFieldInitialDeposit.setText("");
+        jTextFieldRePassword.setText("");
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jRadioButton2ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        username = jTextFieldUsername.getText();
+        password = jTextFieldPassword.getText();
+        String tempSocial = jTextFieldSS.getText();
+        socialNumber = Integer.parseInt(tempSocial);
+        String tempDeposit = jTextFieldInitialDeposit.getText();
+        deposit = Integer.parseInt(tempDeposit);
+        
+        if (jRadioButton2.isSelected()) {
+            accountType = "C";
+            try {
+                mysqlsource.createUser(username, password, socialNumber, 
+                        deposit, accountType);
+            } catch (Exception ex) {
+                Logger.getLogger(CreateAccountMenu.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        else if (jRadioButton3.isSelected()) {
+            accountType = "S";
+            try {
+                mysqlsource.createUser(username, password, socialNumber, deposit,
+                        accountType);
+            } catch (Exception ex) {
+                Logger.getLogger(CreateAccountMenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        else { 
+            accountType = "";
+            try {
+                mysqlsource.createUser(username, password, socialNumber, deposit,
+                        accountType);
+            } catch (Exception ex) {
+                Logger.getLogger(CreateAccountMenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -220,6 +300,7 @@ public class CreateAccountMenu extends javax.swing.JDialog {
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @SuppressWarnings("override")
             public void run() {
                 CreateAccountMenu dialog = new CreateAccountMenu(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {

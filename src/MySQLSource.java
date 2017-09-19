@@ -1,16 +1,13 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Date;
+import java.sql.*;
 
 public class MySQLSource {
     private Connection connect = null;
     private Statement statement = null;
     private final PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
+    
+    private final String SQLConnect = "jdbc:mysql://localhost:3306/bankusers";
+    
 
     public boolean isUserValid(String user, String password) throws Exception {
         try {
@@ -18,20 +15,22 @@ public class MySQLSource {
             Class.forName("com.mysql.jdbc.Driver");
             // Setup the connection with the DB
             connect = DriverManager
-                    .getConnection("jdbc:mysql://localhost:3306/mysql?zeroDate"
-                            + "TimeBehavior=convertToNull"
-                            + " [root on Default schema]");
+                    .getConnection(SQLConnect, "root", "root");
 
             // Statements allow to issue SQL queries to the database
             statement = connect.createStatement();
             // Result set get the result of the SQL query
             resultSet = statement
-                    .executeQuery("select count(*) as numberofrecords from table "
-                            + "where user = '" + user +"' "
+                    .executeQuery("select * from users "
+                            + "where username = '" + user +"' "
                             + "and password = '" + password + "'");
-            String records = resultSet.getString("numberofrecords");
-            writeResultSet(resultSet);
-            return false;
+            //String records = resultSet.getString("count(*)");
+            if (resultSet.next()) {
+                return true;
+            }
+            else {
+                return false;
+            }
         } catch (ClassNotFoundException | SQLException e) {
             throw e;
         } finally {
@@ -39,28 +38,62 @@ public class MySQLSource {
         }
 
     }
+    
+    public Double getBalance(String username) throws Exception {
+        try {
+            // This will load the MySQL driver, each DB has its own driver
+            Class.forName("com.mysql.jdbc.Driver");
+            // Setup the connection with the DB
+            connect = DriverManager.getConnection(SQLConnect, "root", "root");
 
-    private void writeResultSet(ResultSet resultSet) throws SQLException {
-        // ResultSet is initially before the first data set
-        while (resultSet.next()) {
-            // It is possible to get the columns via name
-            // also possible to get the columns via the column number
-            // which starts at 1
-            // e.g. resultSet.getSTring(2);
-            String user = resultSet.getString("myuser");
-            String website = resultSet.getString("webpage");
-            String summary = resultSet.getString("summary");
-            Date date = resultSet.getDate("datum");
-            String comment = resultSet.getString("comments");
-            System.out.println("User: " + user);
-            System.out.println("Website: " + website);
-            System.out.println("summary: " + summary);
-            System.out.println("Date: " + date);
-            System.out.println("Comment: " + comment);
+            // Statements allow to issue SQL queries to the database
+            statement = connect.createStatement();
+            // Result set get the result of the SQL query
+            resultSet = statement
+                    .executeQuery("select t.balance "
+                            + "from transactions t and user u "
+                            + "where t.user = u.id "
+                            + "and u.username = '" + username + "' "
+                            + "ORDER BY t.id DESC LIMIT 1");
+            Double balance = resultSet.getDouble("balance");
+  
+            return balance;
+        } catch (ClassNotFoundException | SQLException e) {
+            throw e;
+        } finally {
+            close();
+        }
+    }
+    
+    public void createUser(String username, String password, int socialNumber,
+            double deposit, String accountType) throws Exception {
+        
+        Statement writeSet = null;
+        
+        try {
+            connect = DriverManager.getConnection(SQLConnect, "root", "root");
+            connect.setAutoCommit(false);
+//            System.out.println(connect);
+            writeSet = connect.createStatement();
+            
+            writeSet.addBatch("insert into users"
+                    + "(username,password,socialNum,balance,accounttype)"
+                    + " values('" + username + "',"
+                    + " '" + password + "',"
+                    + " '" + socialNumber + "',"
+                    + " '" + deposit + "',"
+                    + " '" + accountType + "')");
+            
+            int[] updateCounts = writeSet.executeBatch();
+            connect.commit();            
+            
+        /*} catch (ClassNotFoundException | SQLException e) {
+            throw e;*/
+        } finally {
+            close();
         }
     }
 
-    // You need to close the resultSet
     private void close() {
         try {
             if (resultSet != null) {

@@ -26,9 +26,6 @@ public class Main extends javax.swing.JFrame {
         jButtonLogin = new javax.swing.JButton();
         jButtonCreateAccount = new javax.swing.JButton();
         jButtonExit = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenuFile = new javax.swing.JMenu();
-        jMenuEdit = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Bank Application");
@@ -100,14 +97,6 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jMenuFile.setText("File");
-        jMenuBar1.add(jMenuFile);
-
-        jMenuEdit.setText("Edit");
-        jMenuBar1.add(jMenuEdit);
-
-        setJMenuBar(jMenuBar1);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -143,12 +132,17 @@ public class Main extends javax.swing.JFrame {
         String password = jPasswordFieldPassword.getText();
         
         try {
+            //mysqlsource.Connection();
             mysqlsource.isUserValid(user, password);
+            
+            
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        System.out.println(jTextFieldUsername.getText());
+        
+        MainMenu menu = new MainMenu(this, true);
+        menu.setVisible(true);
     }//GEN-LAST:event_jButtonLoginActionPerformed
 
     private void jButtonCreateAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateAccountActionPerformed
@@ -197,9 +191,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton jButtonLogin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenu jMenuEdit;
-    private javax.swing.JMenu jMenuFile;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField jPasswordFieldPassword;
     private javax.swing.JTextField jTextFieldUsername;

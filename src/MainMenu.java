@@ -1,11 +1,19 @@
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class MainMenu extends javax.swing.JFrame {
 
     /**
      * Creates new form MainMenu
      */
-    public MainMenu() {
+    public MainMenu(java.awt.Frame parent, boolean modal) {
         initComponents();
+        mysqlsource = new MySQLSource();
+        setLocationRelativeTo(parent);
     }
+    
+        private final MySQLSource mysqlsource;
+    
 
     
     @SuppressWarnings("unchecked")
@@ -139,7 +147,18 @@ public class MainMenu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainMenu().setVisible(true);
+                MainMenu dialog = new MainMenu(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                   
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                
+                
+                
+                dialog.setVisible(true);
             }
         });
     }
