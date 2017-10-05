@@ -23,7 +23,6 @@ public class CreateAccountMenu extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup = new javax.swing.ButtonGroup();
         jRadioButtonSavings = new javax.swing.JRadioButton();
         jButtonCreate = new javax.swing.JButton();
         jButtonClear = new javax.swing.JButton();
@@ -47,7 +46,7 @@ public class CreateAccountMenu extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
-        buttonGroup.add(jRadioButtonSavings);
+        buttonGroup1.add(jRadioButtonSavings);
         jRadioButtonSavings.setText("Savings");
         jRadioButtonSavings.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -64,7 +63,7 @@ public class CreateAccountMenu extends javax.swing.JDialog {
 
         jButtonClear.setText("Clear");
 
-        buttonGroup.add(jRadioButtonCheckings);
+        buttonGroup1.add(jRadioButtonCheckings);
         jRadioButtonCheckings.setText("Checkings");
 
         jLabel6.setText("Account Type:");
@@ -269,6 +268,8 @@ public class CreateAccountMenu extends javax.swing.JDialog {
                 Logger.getLogger(CreateAccountMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -315,7 +316,6 @@ public class CreateAccountMenu extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

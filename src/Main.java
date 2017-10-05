@@ -1,6 +1,8 @@
 
+import static java.awt.SystemColor.window;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class Main extends javax.swing.JFrame {
 
@@ -132,17 +134,22 @@ public class Main extends javax.swing.JFrame {
         String password = jPasswordFieldPassword.getText();
         
         try {
-            //mysqlsource.Connection();
-            mysqlsource.isUserValid(user, password);
+            if (mysqlsource.isUserValid(user, password) == true) {
+                MainMenu menu = new MainMenu(this, true);
+                menu.setVisible(true);
+            }
             
+            else {
+//                alert("No matching user and/or password exists");
+                  JOptionPane.showMessageDialog(null,
+                          "No matching username and/or password exists.");
+            }
             
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
-        MainMenu menu = new MainMenu(this, true);
-        menu.setVisible(true);
     }//GEN-LAST:event_jButtonLoginActionPerformed
 
     private void jButtonCreateAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateAccountActionPerformed
@@ -195,5 +202,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPasswordField jPasswordFieldPassword;
     private javax.swing.JTextField jTextFieldUsername;
     // End of variables declaration//GEN-END:variables
+
 
 }

@@ -6,7 +6,8 @@ public class MySQLSource {
     private final PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
     
-    private final String SQLConnect = "jdbc:mysql://localhost:3306/bankusers";
+    private final String SQLConnect =
+            "jdbc:mysql://localhost:3306/bankusers?autoReconnect=true&useSSL=false";
     
 
     public boolean isUserValid(String user, String password) throws Exception {
@@ -36,7 +37,6 @@ public class MySQLSource {
         } finally {
             close();
         }
-
     }
     
     public Double getBalance(String username) throws Exception {
@@ -54,11 +54,72 @@ public class MySQLSource {
                             + "from transactions t and user u "
                             + "where t.user = u.id "
                             + "and u.username = '" + username + "' "
-                            + "ORDER BY t.id DESC LIMIT 1");
-            Double balance = resultSet.getDouble("balance");
+                            + "ORDER BY t.id DESC LIMIT 5");
+            if (resultSet.next()) {
+                Double balance = resultSet.getDouble("balance");
   
-            return balance;
+                return balance;
+            }
+            else {
+                return 0.0;
+            }
+            
         } catch (ClassNotFoundException | SQLException e) {
+            throw e;
+        } finally {
+            close();
+        }
+    }
+    
+    public int getUserID (String username) throws Exception {
+        try {
+            // This will load the MySQL driver, each DB has its own driver
+            Class.forName("com.mysql.jdbc.Driver");
+            // Setup the connection with the DB
+            connect = DriverManager.getConnection(SQLConnect, "root", "root");
+
+            // Statements allow to issue SQL queries to the database
+            statement = connect.createStatement();
+            // Result set get the result of the SQL query
+            resultSet = statement
+                    .executeQuery("select id "
+                            + "from users "
+                            + "where username = '" + username + "'");
+            
+            if (resultSet.next()) {
+                int UserID = resultSet.getInt("id");
+  
+                return UserID;
+            }
+            else {
+                return -1;
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            throw e;
+        } finally {
+            close();
+        }
+    }
+    
+    public void createTransaction(String username, double deposit) throws Exception {
+        int primaryKey = getUserID(username);
+        
+        Statement writeSet = null;
+        
+        try {
+            connect = DriverManager.getConnection(SQLConnect, "root", "root");
+            connect.setAutoCommit(false);
+            writeSet = connect.createStatement();
+        
+            writeSet.addBatch("insert into transactions(amount, balance, user)"
+                    + " values('" + deposit + "',"
+                    + " '" + deposit + "',"
+                    + " '" + primaryKey + "')");
+            
+            int[] updateCounts = writeSet.executeBatch();
+            connect.commit();
+        
+        } catch (SQLException e) {
             throw e;
         } finally {
             close();
@@ -83,15 +144,17 @@ public class MySQLSource {
                     + " '" + socialNumber + "',"
                     + " '" + deposit + "',"
                     + " '" + accountType + "')");
-            
+          
             int[] updateCounts = writeSet.executeBatch();
-            connect.commit();            
+            connect.commit();
             
         /*} catch (ClassNotFoundException | SQLException e) {
             throw e;*/
         } finally {
             close();
         }
+        
+        createTransaction(username, deposit);
     }
 
     private void close() {
