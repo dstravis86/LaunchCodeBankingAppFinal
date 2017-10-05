@@ -14,7 +14,6 @@ public class Main extends javax.swing.JFrame {
     
     private final MySQLSource mysqlsource;
     
-    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -148,7 +147,6 @@ public class Main extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
         
     }//GEN-LAST:event_jButtonLoginActionPerformed
 
