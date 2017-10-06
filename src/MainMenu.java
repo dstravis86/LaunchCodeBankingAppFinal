@@ -1,5 +1,6 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class MainMenu extends javax.swing.JFrame {
 
@@ -10,9 +11,11 @@ public class MainMenu extends javax.swing.JFrame {
         initComponents();
         mysqlsource = new MySQLSource();
         setLocationRelativeTo(parent);
+        main = new Main();
     }
     
-        private final MySQLSource mysqlsource;
+    private final MySQLSource mysqlsource;
+    private final Main main;
     
 
     
@@ -155,7 +158,11 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        
+        try {
+            jTextField1.setText(Double.toString(mysqlsource.getBalance(main.user)));
+        } catch (Exception ex) {
+            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -163,11 +170,48 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Double change = Double.parseDouble(jTextField2.getText());
         
+        if (jRadioButton1.isSelected()) {
+            try {
+                if (change >= mysqlsource.checkBalance(main.id)) {
+                    double amount = mysqlsource.checkBalance(main.id) - change;
+                    mysqlsource.updateUser(main.id, amount);
+                    double x = -amount;
+                    mysqlsource.updateTransactionsAmount(main.id, x);
+                    mysqlsource.updateTransactionsBalance(main.id, amount);
+                }
+                
+                else {
+                    JOptionPane.showMessageDialog(null,
+                          "The amount entered exceeds amount in bank.");
+                }
+                
+            } catch (Exception ex) {
+                Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        else if (jRadioButton2.isSelected()) {
+            try {
+                double amount = mysqlsource.checkBalance(main.id) + change;
+                mysqlsource.updateUser(main.id, amount);
+                mysqlsource.updateTransactionsAmount(main.id, change);
+                mysqlsource.updateTransactionsBalance(main.id, amount);
+            } catch (Exception ex) {
+                Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        else{
+            JOptionPane.showMessageDialog(null,
+                          "No option was chosen, to withdraw or deposit must be "
+                                  + "chosen");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jTextArea1ActionPerformed(java.awt.event.ActionEvent evt) {
-        
+    private void jTextArea1ActionPerformed(java.awt.event.ActionEvent evt) throws Exception {
+        jTextArea1.setText(Double.toString(mysqlsource.getBalance(main.user)));
     }
     
     

@@ -14,6 +14,9 @@ public class Main extends javax.swing.JFrame {
     
     private final MySQLSource mysqlsource;
     
+    public int id;
+    public String user;
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -129,17 +132,17 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonExitActionPerformed
 
     private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoginActionPerformed
-        String user = jTextFieldUsername.getText();
+        user = jTextFieldUsername.getText();
         String password = jPasswordFieldPassword.getText();
         
         try {
             if (mysqlsource.isUserValid(user, password) == true) {
                 MainMenu menu = new MainMenu(this, true);
                 menu.setVisible(true);
+                id = mysqlsource.getUserID(user);
             }
             
             else {
-//                alert("No matching user and/or password exists");
                   JOptionPane.showMessageDialog(null,
                           "No matching username and/or password exists.");
             }
