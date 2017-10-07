@@ -12,10 +12,31 @@ public class MainMenu extends javax.swing.JFrame {
         mysqlsource = new MySQLSource();
         setLocationRelativeTo(parent);
         main = new Main();
+        displayText();
     }
     
     private final MySQLSource mysqlsource;
     private final Main main;
+    
+    public static int id;
+    
+    
+    
+    private void displayText() {
+    try {
+            id = mysqlsource.getUserID(Main.user);
+            jTextField1.setText(Double.toString(mysqlsource
+                    .getUserBalance(id)));
+        } catch (Exception ex) {
+            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    try{
+            jTextArea1.setText(Double.toString(mysqlsource
+                    .getTransactionsBalance(Main.user)));
+        } catch (Exception ex) {
+            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
 
     
@@ -158,11 +179,7 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        try {
-            jTextField1.setText(Double.toString(mysqlsource.getBalance(main.user)));
-        } catch (Exception ex) {
-            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -174,12 +191,12 @@ public class MainMenu extends javax.swing.JFrame {
         
         if (jRadioButton1.isSelected()) {
             try {
-                if (change >= mysqlsource.checkBalance(main.id)) {
-                    double amount = mysqlsource.checkBalance(main.id) - change;
-                    mysqlsource.updateUser(main.id, amount);
+                if (change >= mysqlsource.checkBalance(id)) {
+                    double amount = mysqlsource.checkBalance(id) - change;
+                    mysqlsource.updateUser(id, amount);
                     double x = -amount;
-                    mysqlsource.updateTransactionsAmount(main.id, x);
-                    mysqlsource.updateTransactionsBalance(main.id, amount);
+                    mysqlsource.updateTransactionsAmount(id, x);
+                    mysqlsource.updateTransactionsBalance(id, amount);
                 }
                 
                 else {
@@ -194,10 +211,10 @@ public class MainMenu extends javax.swing.JFrame {
         
         else if (jRadioButton2.isSelected()) {
             try {
-                double amount = mysqlsource.checkBalance(main.id) + change;
-                mysqlsource.updateUser(main.id, amount);
-                mysqlsource.updateTransactionsAmount(main.id, change);
-                mysqlsource.updateTransactionsBalance(main.id, amount);
+                double amount = mysqlsource.checkBalance(id) + change;
+                mysqlsource.updateUser(id, amount);
+                mysqlsource.updateTransactionsAmount(id, change);
+                mysqlsource.updateTransactionsBalance(id, amount);
             } catch (Exception ex) {
                 Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -209,10 +226,6 @@ public class MainMenu extends javax.swing.JFrame {
                                   + "chosen");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jTextArea1ActionPerformed(java.awt.event.ActionEvent evt) throws Exception {
-        jTextArea1.setText(Double.toString(mysqlsource.getBalance(main.user)));
-    }
     
     
     /**

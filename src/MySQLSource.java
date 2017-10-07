@@ -12,20 +12,13 @@ public class MySQLSource {
 
     public boolean isUserValid(String user, String password) throws Exception {
         try {
-            // This will load the MySQL driver, each DB has its own driver
             Class.forName("com.mysql.jdbc.Driver");
-            // Setup the connection with the DB
-            connect = DriverManager
-                    .getConnection(SQLConnect, "root", "root");
-
-            // Statements allow to issue SQL queries to the database
+            connect = DriverManager.getConnection(SQLConnect, "root", "root");
             statement = connect.createStatement();
-            // Result set get the result of the SQL query
             resultSet = statement
                     .executeQuery("select * from users "
                             + "where username = '" + user +"' "
                             + "and password = '" + password + "'");
-            //String records = resultSet.getString("count(*)");
             if (resultSet.next()) {
                 return true;
             }
@@ -41,14 +34,9 @@ public class MySQLSource {
     
     public Double getUserBalance(int id) throws Exception {
         try {
-            // This will load the MySQL driver, each DB has its own driver
             Class.forName("com.mysql.jdbc.Driver");
-            // Setup the connection with the DB
             connect = DriverManager.getConnection(SQLConnect, "root", "root");
-
-            // Statements allow to issue SQL queries to the database
             statement = connect.createStatement();
-            // Result set get the result of the SQL query
             resultSet = statement
                     .executeQuery("select balance from users where id = "
                             + "'" + id + "'");
@@ -68,7 +56,7 @@ public class MySQLSource {
         }
     }
     
-    public Double getBalance(String username) throws Exception {
+    public Double getTransactionsBalance(String username) throws Exception {
         try {
             // This will load the MySQL driver, each DB has its own driver
             Class.forName("com.mysql.jdbc.Driver");
@@ -80,7 +68,7 @@ public class MySQLSource {
             // Result set get the result of the SQL query
             resultSet = statement
                     .executeQuery("select t.balance "
-                            + "from transactions t and user u "
+                            + "from transactions t, users u "
                             + "where t.user = u.id "
                             + "and u.username = '" + username + "' "
                             + "ORDER BY t.id DESC LIMIT 1");
@@ -102,14 +90,9 @@ public class MySQLSource {
     
     public int getUserID (String username) throws Exception {
         try {
-            // This will load the MySQL driver, each DB has its own driver
             Class.forName("com.mysql.jdbc.Driver");
-            // Setup the connection with the DB
             connect = DriverManager.getConnection(SQLConnect, "root", "root");
-
-            // Statements allow to issue SQL queries to the database
             statement = connect.createStatement();
-            // Result set get the result of the SQL query
             resultSet = statement
                     .executeQuery("select id "
                             + "from users "

@@ -14,8 +14,7 @@ public class Main extends javax.swing.JFrame {
     
     private final MySQLSource mysqlsource;
     
-    public int id;
-    public String user;
+    public static String user;
     
 
     @SuppressWarnings("unchecked")
@@ -139,7 +138,8 @@ public class Main extends javax.swing.JFrame {
             if (mysqlsource.isUserValid(user, password) == true) {
                 MainMenu menu = new MainMenu(this, true);
                 menu.setVisible(true);
-                id = mysqlsource.getUserID(user);
+                jTextFieldUsername.setText("");
+                jPasswordFieldPassword.setText("");
             }
             
             else {
