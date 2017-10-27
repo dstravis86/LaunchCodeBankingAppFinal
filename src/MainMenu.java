@@ -32,7 +32,7 @@ public class MainMenu extends javax.swing.JFrame {
         }
     try{
             jTextArea1.setText(Double.toString(mysqlsource
-                    .getTransactionsBalance(Main.user)));
+                    .getTransactionsAmount(Main.user)));
         } catch (Exception ex) {
             Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -191,12 +191,16 @@ public class MainMenu extends javax.swing.JFrame {
         
         if (jRadioButton1.isSelected()) {
             try {
-                if (change >= mysqlsource.checkBalance(id)) {
+                if (mysqlsource.checkBalance(id) >= change) {
                     double amount = mysqlsource.checkBalance(id) - change;
                     mysqlsource.updateUser(id, amount);
-                    double x = -amount;
+                    double x = -change;
                     mysqlsource.updateTransactionsAmount(id, x);
                     mysqlsource.updateTransactionsBalance(id, amount);
+                    dispose();
+                    JOptionPane.showMessageDialog(null,
+                          "The account was changed. " + change +
+                                  " was withdrawn from the account.");
                 }
                 
                 else {
@@ -215,6 +219,10 @@ public class MainMenu extends javax.swing.JFrame {
                 mysqlsource.updateUser(id, amount);
                 mysqlsource.updateTransactionsAmount(id, change);
                 mysqlsource.updateTransactionsBalance(id, amount);
+                dispose();
+                JOptionPane.showMessageDialog(null,
+                          "The account was changed. " + change +
+                                  " was deposited to the account.");
             } catch (Exception ex) {
                 Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }

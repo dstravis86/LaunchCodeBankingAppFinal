@@ -1,4 +1,5 @@
 import java.sql.*;
+import javax.swing.JOptionPane;
 
 public class MySQLSource {
     private Connection connect = null;
@@ -7,7 +8,8 @@ public class MySQLSource {
     private ResultSet resultSet = null;
     
     private final String SQLConnect =
-            "jdbc:mysql://localhost:3306/bankusers?autoReconnect=true&useSSL=false";
+            "jdbc:mysql://localhost:3306/bankusers?"
+            + "autoReconnect=true&useSSL=false";
     
 
     public boolean isUserValid(String user, String password) throws Exception {
@@ -56,7 +58,7 @@ public class MySQLSource {
         }
     }
     
-    public Double getTransactionsBalance(String username) throws Exception {
+    public Double getTransactionsAmount(String username) throws Exception {
         try {
             // This will load the MySQL driver, each DB has its own driver
             Class.forName("com.mysql.jdbc.Driver");
@@ -67,13 +69,13 @@ public class MySQLSource {
             statement = connect.createStatement();
             // Result set get the result of the SQL query
             resultSet = statement
-                    .executeQuery("select t.balance "
+                    .executeQuery("select t.amount "
                             + "from transactions t, users u "
                             + "where t.user = u.id "
                             + "and u.username = '" + username + "' "
                             + "ORDER BY t.id DESC LIMIT 1");
             if (resultSet.next()) {
-                Double balance = resultSet.getDouble("balance");
+                Double balance = resultSet.getDouble("amount");
   
                 return balance;
             }
@@ -143,10 +145,19 @@ public class MySQLSource {
         
         Statement writeSet = null;
         
-        try {
+        isUserValid(username,password);
+        
+        if (isUserValid(username,password) == true) {
+            JOptionPane.showMessageDialog(null,
+                    "A user of the same information exists. "
+                            + "Please choose different a different username or "
+                            + "password.");
+        }
+        
+        else {
+            try {
             connect = DriverManager.getConnection(SQLConnect, "root", "root");
             connect.setAutoCommit(false);
-//            System.out.println(connect);
             writeSet = connect.createStatement();
             
             writeSet.addBatch("insert into users"
@@ -160,13 +171,13 @@ public class MySQLSource {
             int[] updateCounts = writeSet.executeBatch();
             connect.commit();
             
-        /*} catch (ClassNotFoundException | SQLException e) {
-            throw e;*/
-        } finally {
-            close();
+            } finally {
+                close();
+            }
+        
+            createTransaction(username, deposit);
         }
         
-        createTransaction(username, deposit);
     }
     
     public Double checkBalance(int ID) throws Exception {
@@ -207,7 +218,7 @@ public class MySQLSource {
             writeSet = connect.createStatement();
             
             writeSet.addBatch("update users set balance = '"
-                    + deposit + "' where user = '" + ID + "'");
+                    + deposit + "' where id = '" + ID + "'");
           
             int[] updateCounts = writeSet.executeBatch();
             connect.commit();

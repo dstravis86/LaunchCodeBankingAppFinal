@@ -1,6 +1,7 @@
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class CreateAccountMenu extends javax.swing.JDialog {
 
@@ -233,43 +234,57 @@ public class CreateAccountMenu extends javax.swing.JDialog {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         username = jTextFieldUsername.getText();
         password = jTextFieldPassword.getText();
+        String repassword = jTextFieldRePassword.getText();
         String tempSocial = jTextFieldSS.getText();
         socialNumber = Integer.parseInt(tempSocial);
         String tempDeposit = jTextFieldInitialDeposit.getText();
         deposit = Integer.parseInt(tempDeposit);
         
-        if (jRadioButton2.isSelected()) {
-            accountType = "C";
-            try {
-                mysqlsource.createUser(username, password, socialNumber, 
-                        deposit, accountType);
-            } catch (Exception ex) {
-                Logger.getLogger(CreateAccountMenu.class.getName())
-                        .log(Level.SEVERE, null, ex);
+//        System.out.println(password);
+//        System.out.println(jTextFieldRePassword.getText());
+//        System.out.println(password.equals(jTextFieldRePassword.getText()));
+        if (password.equals(repassword)) {
+            if (jRadioButton2.isSelected()) {
+                accountType = "C";
+                try {
+                    mysqlsource.createUser(username, password, socialNumber, 
+                            deposit, accountType);
+                } catch (Exception ex) {
+                    Logger.getLogger(CreateAccountMenu.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
             }
+        
+            else if (jRadioButton3.isSelected()) {
+                accountType = "S";
+                try {
+                    mysqlsource.createUser(username, password, socialNumber, deposit,
+                            accountType);
+                } catch (Exception ex) {
+                    Logger.getLogger(CreateAccountMenu.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+            }
+        
+            else { 
+                accountType = "";
+                try {
+                    mysqlsource.createUser(username, password, socialNumber,
+                            deposit, accountType);
+                } catch (Exception ex) {
+                    Logger.getLogger(CreateAccountMenu.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+            }
+        
+            dispose();
+            JOptionPane.showMessageDialog(null,"Account created.");
         }
         
-        else if (jRadioButton3.isSelected()) {
-            accountType = "S";
-            try {
-                mysqlsource.createUser(username, password, socialNumber, deposit,
-                        accountType);
-            } catch (Exception ex) {
-                Logger.getLogger(CreateAccountMenu.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        else if (password != repassword) {
+            JOptionPane.showMessageDialog(null,
+                    "The entered passwords do not match.");
         }
-        
-        else { 
-            accountType = "";
-            try {
-                mysqlsource.createUser(username, password, socialNumber, deposit,
-                        accountType);
-            } catch (Exception ex) {
-                Logger.getLogger(CreateAccountMenu.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
-        dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
